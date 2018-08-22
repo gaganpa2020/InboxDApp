@@ -3,18 +3,34 @@ const ganache = require('ganache-cli');
 const Web3 = require('web3');
 const web3 = new Web3(ganache.provider());
 
-let accounts;
-beforeEach(()=>{
-//Get the list of all the account.
-web3.eth.getAccounts();
+const {interface, bytecode} = require('../compile');
 
-//Use on of the account to deploy contract.
+let accounts;
+let inbox;
+
+beforeEach(async ()=>{
+
+    //Get the list of all the account.
+    
+    //Using promise 
+    // web3.eth.getAccounts()
+    // .then(fetchedAccounts => {
+    //     console.log(fetchedAccounts);        
+    // });
+
+    //Use asyn/await 
+    accounts = await web3.eth.getAccounts();
+
+    //Use on of the account to deploy contract.
+    inbox = await new web3.eth.Contract(JSON.parse(interface))
+    .deploy({data: bytecode, arguments: ['hi there']})
+    .send({from: accounts[0], gas: '1000000' });
 });
 
 describe('Inbox',()=>{
-    it('get accounts', ()=>{
- 
-   });      
+    it('Deploy a contract', ()=>{
+        assert.ok(inbox.options.address);
+    });      
 }); 
 
 /*
