@@ -31,6 +31,23 @@ describe('Inbox',()=>{
     it('Deploy a contract', ()=>{
         assert.ok(inbox.options.address);
     });      
+
+    it('has a default message', async ()=>{
+        let message = await inbox.methods.message().call();
+        console.log(message);
+    });
+
+    it('It can change the message, Call method', async ()=>{
+        await inbox.methods.SetMessage("bye there!").call();
+        let message = await inbox.methods.message().call();
+        console.log(message);
+    });
+
+    it('It can change the message, send transaction to the function.', async ()=>{
+        let transactionData = await inbox.methods.SetMessage("bye there!").send({from: accounts[0]});
+        let message = await inbox.methods.message().call();
+        console.log(message);
+    });
 }); 
 
 /*
